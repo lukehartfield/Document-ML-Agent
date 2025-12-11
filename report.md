@@ -39,10 +39,7 @@ The stakes are real: bad approvals waste money; slow reviews frustrate teams. Re
 - **Feedback loop:** The Gradio app captures reviewer corrections; those updates feed regex/NER/vendor patterns and anomaly labels, so the same edge case is easier the next time.
 
 ### Pre-Processing & Exploration
-- Image cleanup: resize, denoise, deskew when OCR confidence drops; normalize to RGB for consistent inputs across OCR engines.
-- OCR normalization: merge overlapping boxes (IoU>0.5), lowercase/strip tokens, normalize dates/amounts so downstream regex/NER see consistent text.
-- Synthetic validation: spot-check skew/lighting/handwritten variants before training to ensure the data covers the ugly cases we care about.
-- Outcome: cleaner text/layout signals, fewer brittle misses, and faster downstream convergence.
+Pre-processing differed by component but followed the same goal: clean inputs and stable downstream signals. For classification and OCR, we normalized images, resized them, and added light augmentations; when OCR confidence dipped, we applied targeted fixes like denoising, contrast boosts, and deskewing. OCR text was standardized by merging overlapping boxes, stripping noise, and normalizing dates and amounts so regex, NER, and LayoutLM saw consistent tokens. We also validated synthetic variants—skewed, low-light, handwritten—to ensure coverage of difficult cases. For anomaly detection, we engineered simple, interpretable features such as log(amount), line-item counts, vendor length, and date-validity flags. These steps led to cleaner signals, fewer brittle failures, and smoother model convergence.
 
 ---
 
